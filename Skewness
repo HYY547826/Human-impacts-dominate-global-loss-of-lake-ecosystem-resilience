@@ -2,10 +2,9 @@ import numpy as np
 import pandas as pd
 
 df = pd.read_csv()
-kurtosis_df = pd.DataFrame()
-
 q = 1
 r = 1
+sw_df = pd.DataFrame()
 for i in range(0, 1049):
     df1 = df.iloc[5:228, q:q+r]
     q += 1
@@ -33,11 +32,9 @@ for i in range(0, 1049):
     for a in odd:
         for b in a:
             odd1.append(b)
-
     for c in eve:
         for d in c:
             eve1.append(d)
-
     data_odd = pd.DataFrame(odd1)
     data_eve = pd.DataFrame(eve1)
 
@@ -45,8 +42,7 @@ for i in range(0, 1049):
 
     e = 0
     f = 60
-
-    kurtosis_list = []
+    sw_list = []
 
     for t in range(0, 163):
         data_m1 = data_m.iloc[e:e + f, 0:2]
@@ -55,9 +51,12 @@ for i in range(0, 1049):
         e = e + f
 
         s1 = pd.Series(x)
-        kt = s1.kurtosis()
-        kurtosis_list.append(kt)
+        skew = s1.skew()
+        sw_list.append(skew)
 
-    kurtosis_df[f'Kurtosis_{i}'] = kurtosis_list
+    
+    sw_iteration_df = pd.DataFrame({f'Iteration_{i}': sw_list})
 
-kurtosis_df.to_csv()
+    
+    sw_df = pd.concat([sw_df, sw_iteration_df], axis=1)
+print(sw_df)
