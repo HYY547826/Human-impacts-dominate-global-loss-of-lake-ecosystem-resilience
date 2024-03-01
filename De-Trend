@@ -1,0 +1,41 @@
+import pandas as pd
+import numpy as np
+from scipy.optimize import curve_fit
+from scipy.interpolate import interp1d
+
+file_path = r''
+df = pd.read_csv(file_path)
+
+def harmonic_function(x, a0, a1, b1, a2, b2, a3, b3):
+    return a0 + a1 * np.cos(2 * np.pi * x) + b1 * np.sin(2 * np.pi * x) + a2 * np.cos(4 * np.pi * x) + b2 * np.sin(
+        4 * np.pi * x) + a3 * np.cos(6 * np.pi * x) + b3 * np.sin(6 * np.pi * x)
+
+detrended_data = df.copy()
+
+for column in df.columns:
+    x = np.arange(len(df[column]))
+    first_valid_index = df[column].first_valid_index()
+
+    valid_indices = ~np.isnan(df[column][first_valid_index:])
+    f = interp1d(x[first_valid_index + valid_indices], df[column][first_valid_index + valid_indices], kind='linear',
+                 fill_value="extrapolate")
+    df[column][:first_valid_index] = f(x[:first_valid_index])
+
+    seasonal_trend = np.zeros_like(x, dtype=float)
+    for i in range(len(x)):
+
+        if ~np.isnan(df[column][i]):
+
+            x_single = x[:i + 1]
+            data_single = df[column][:i + 1]
+
+
+            valid_indices = ~np.isnan(data_single) & ~np.isinf(data_single)
+
+
+            if len(x_single[valid_indices]) >= 7:
+                popt, _ = curve_fit(harmonic_function, x_single[valid_indices], data_single[valid_indices])
+                seasonal_trend[i] = harmonic_function(x[i], *popt)
+
+    detrended_data[column] = df[column] - seasonal_trend
+
