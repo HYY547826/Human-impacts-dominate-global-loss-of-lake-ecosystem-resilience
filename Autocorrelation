@@ -72,4 +72,3 @@ for i in range(0, 1049):
 
     aut_df[f'Autocorrelation_{i}'] = aut_list
 
-aut_df.to_csv()
