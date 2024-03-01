@@ -59,4 +59,3 @@ for i in range(0, 1049):
 
     
     sw_df = pd.concat([sw_df, sw_iteration_df], axis=1)
-print(sw_df)
