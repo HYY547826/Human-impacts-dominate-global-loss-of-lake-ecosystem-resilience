@@ -1,0 +1,65 @@
+import numpy as np
+import pandas as pd
+
+df = pd.read_csv()
+
+
+kurtosis_df = pd.DataFrame()
+
+
+q = 1
+r = 1
+for i in range(0, 1049):
+    df1 = df.iloc[5:228, q:q+r]
+    q += 1
+    print()
+    x = 0
+    w = 1
+    n = 60
+    odd = []
+    eve = []
+    odd1 = []
+    eve1 = []
+
+    for s in range(0, 163):
+        data = df1.iloc[x:x + n, 0]
+        data = data.values.tolist()
+        x = 1 + x
+        odd.append(data)
+
+    for l in range(0, 163):
+        data = df1.iloc[w:w + n, 0]
+        data = data.values.tolist()
+        w = 1 + w
+        eve.append(data)
+
+    for a in odd:
+        for b in a:
+            odd1.append(b)
+
+    for c in eve:
+        for d in c:
+            eve1.append(d)
+
+    data_odd = pd.DataFrame(odd1)
+    data_eve = pd.DataFrame(eve1)
+
+    data_m = pd.concat([data_odd, data_eve], axis=1)
+
+    e = 0
+    f = 60
+
+    kurtosis_list = []
+
+    for t in range(0, 163):
+        data_m1 = data_m.iloc[e:e + f, 0:2]
+        x = data_m.iloc[e:e + f, 0]
+        y = data_m.iloc[e:e + f, 1]
+        e = e + f
+
+        s1 = pd.Series(x)
+        kt = s1.kurtosis()
+        kurtosis_list.append(kt)
+
+
+    kurtosis_df[f'Kurtosis_{i}'] = kurtosis_list
