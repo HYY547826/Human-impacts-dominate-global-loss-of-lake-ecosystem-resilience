@@ -1,0 +1,18 @@
+import pandas as pd
+import numpy as np
+from scipy.interpolate import interp1d
+
+file_path = r''
+df = pd.read_csv(file_path)
+
+interpolated_data = df.copy()
+for column in df.columns:
+    valid_indices = ~pd.isna(df[column])
+
+    if sum(valid_indices) >= 2:
+
+        f = interp1d(np.where(valid_indices)[0], df[column][valid_indices], kind='linear', fill_value="extrapolate")
+
+        interpolated_data[column] = f(np.arange(len(df)))
+
+interpolated_data.to_csv()
