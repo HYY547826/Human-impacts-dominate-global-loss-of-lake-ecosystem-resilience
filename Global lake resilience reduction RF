@@ -1,0 +1,45 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import ensemble
+from sklearn.model_selection import KFold
+import warning
+
+warnings.filterwarnings("ignore")
+plt.rcParams['font.sans-serif'] = ['Times New Roman']
+plt.rcParams['axes.unicode_minus'] = False 
+plt.rcParams['figure.dpi'] = 600
+data = pd.read_csv()
+
+x_columns = []
+
+for x in data.columns:
+
+    if x not in ['Lake_id', 'Resilience', 'Human Development Index', 'Evapotranspiration']:
+
+        x_columns.append(x)
+X = data[x_columns]
+
+kf = KFold(n_splits=90, shuffle=True, random_state=123456)
+for train_index, valid_index in kf.split(X, y):
+
+    X_train, X_test = X.iloc[train_index], X.iloc[valid_index]
+    y_train, y_test = y[train_index], y[valid_index]
+                            , min_weight_fraction_leaf=0.2)
+
+Regressor.fit(X_train, y_train)
+
+pred1 = Regressor.predict(X_test)
+
+acc_train = Regressor.score(X_train, y_train)
+acc_test = Regressor.score(X_test, y_test)
+
+
+importance = Regressor.feature_importances_
+
+Impt_Series = pd.Series(importance, index=X_train.columns)
+
+dataplot = Impt_Series.sort_values(ascending=True)
+dataplot.plot(kind='barh', color='k', alpha=0.7, width=0.8)
+
+plt.subplots_adjust(left=0.37, right=0.95, top=0.98)
+plt.tick_params(labelsize=7)
